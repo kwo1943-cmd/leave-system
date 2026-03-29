@@ -174,7 +174,6 @@ function searchMyLeaves() {
     const listDiv = getEl('my-leaves-list');
     listDiv.innerHTML = "<p>搜尋中...</p>";
 
-    // 過濾出屬於該工號的請假紀錄
     const myLeaves = allLeaveData.filter(item => 
         item.id.toString().toUpperCase() === id
     );
@@ -187,7 +186,6 @@ function searchMyLeaves() {
     // 按日期排序
     myLeaves.sort((a, b) => a.date.localeCompare(b.date));
 
-    // 生成清單表格
     let html = `
         <table style="width:100%; border-collapse:collapse; margin-top:10px; font-size:0.9em;">
             <tr style="background:#f1f3f4;">
@@ -198,13 +196,18 @@ function searchMyLeaves() {
     `;
     
     myLeaves.forEach(item => {
+        // --- 關鍵修改：簡化日期顯示 ---
+        // 假設 item.date 是 "2026-03-30T00:00:00.000Z" 或 "2026-03-30 00:00:00"
+        // 我們只取前 10 個字元 (YYYY-MM-DD)
+        const simpleDate = item.date.split(' ')[0].split('T')[0]; 
+
         html += `
             <tr>
-                <td style="padding:8px; border:1px solid #ddd; text-align:center;">${item.date}</td>
+                <td style="padding:8px; border:1px solid #ddd; text-align:center; font-weight:bold;">${simpleDate}</td>
                 <td style="padding:8px; border:1px solid #ddd; text-align:center;">${item.type}</td>
                 <td style="padding:8px; border:1px solid #ddd; text-align:center;">
-                    <button onclick="cancelLeave('${id}', '${item.date}')" 
-                        style="background:#dc3545; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">
+                    <button onclick="cancelLeave('${id}', '${simpleDate}')" 
+                        style="background:#dc3545; color:white; border:none; padding:6px 10px; border-radius:4px; cursor:pointer;">
                         取消
                     </button>
                 </td>
@@ -214,7 +217,6 @@ function searchMyLeaves() {
     html += '</table>';
     listDiv.innerHTML = html;
 }
-
 /**
  * 6. 執行刪除 (取消假期)
  */
