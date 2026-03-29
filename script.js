@@ -5,7 +5,7 @@ const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwSI4r8O9qjnv
 const DAILY_LIMIT = 5; // 每日名額上限
 
 let selectedDates = []; // 本次申請選取的日期
-let allLeaveData = [];  // 從資料庫抓回的所有請假紀錄
+let allLeaveData = [];  // 從資料庫抓回的所有請假紀錄 (格式: [{id, date, type}])
 
 // 簡化獲取元件的工具
 const getEl = (id) => document.getElementById(id);
@@ -46,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             updateDateUI();
         },
-        // 抓取並顯示名額事件
         events: fetchEvents 
     });
 
@@ -65,19 +64,16 @@ function fetchEvents(info, successCallback, failureCallback) {
     fetch(GOOGLE_SCRIPT_URL)
         .then(res => res.json())
         .then(dataArray => {
-            // 儲存原始資料供後續查詢使用
             allLeaveData = dataArray; 
             
-            // 統計每個日期出現的次數
             let counts = {};
             dataArray.forEach(item => {
-                const d = item.date; // 確保後端回傳的是 {date: "YYYY-MM-DD"}
+                const d = item.date; // 後端已統一回傳 YYYY-MM-DD
                 if (d) {
                     counts[d] = (counts[d] || 0) + 1;
                 }
             });
 
-            // 轉換為月曆顯示的事件
             let events = Object.keys(counts).map(date => {
                 let count = counts[date];
                 let isFull = count >= DAILY_LIMIT;
@@ -92,7 +88,7 @@ function fetchEvents(info, successCallback, failureCallback) {
             successCallback(events);
         })
         .catch(err => {
-            console.error("抓取資料失敗:", err);
+            console.error("抓取失敗:", err);
             successCallback([]); 
         });
 }
@@ -107,7 +103,7 @@ function updateDateUI() {
 
     if (!container) return;
 
-    selectedDates.sort(); // 排序日期
+    selectedDates.sort();
     if (selectedDates.length === 0) {
         container.innerHTML = '<span style="color: #999; font-size: 0.9em;">請點擊月曆選取日期...</span>';
         if (display) display.style.display = "none";
@@ -137,10 +133,9 @@ if (leaveForm) {
         submitBtn.disabled = true;
         submitBtn.innerText = "提交中...";
 
-        // 建立提交物件
         const formData = {
             applied_at: new Date().toLocaleString(),
-            employee_id: getEl('employeeID').value,
+            employee_id: getEl('employeeID').value.trim().toUpperCase(),
             leave_type: getEl('leaveType').value,
             dates: selectedDates.join(', '), 
             total_days: selectedDates.length,
@@ -153,19 +148,18 @@ if (leaveForm) {
             body: JSON.stringify(formData)
         })
         .then(() => {
-            alert("提交成功！");
-            location.reload(); // 重新整理頁面以更新名額
+            alert("提交成功！系統更新中...");
+            setTimeout(() => { location.reload(); }, 1000);
         })
         .catch(err => {
-            alert("提交失敗，請檢查網路！");
+            alert("提交失敗");
             submitBtn.disabled = false;
-            submitBtn.innerText = "提交申請";
         });
     });
 }
 
 /**
- * 5. 查詢個人假期清單
+ * 5. 查詢個人假期清單 (優化日期顯示)
  */
 function searchMyLeaves() {
     const id = getEl('checkID').value.trim().toUpperCase();
@@ -183,7 +177,6 @@ function searchMyLeaves() {
         return;
     }
 
-    // 按日期排序
     myLeaves.sort((a, b) => a.date.localeCompare(b.date));
 
     let html = `
@@ -195,16 +188,16 @@ function searchMyLeaves() {
             </tr>
     `;
     
-myLeaves.forEach(item => {
-        // --- 核心修正：直接使用後端傳來的 item.date，不需裁切 ---
-        const simpleDate = item.date; 
+    myLeaves.forEach(item => {
+        // 直接使用後端已格式化好的 YYYY-MM-DD
+        const simpleDate = item.date;
 
         html += `
             <tr>
                 <td style="padding:8px; border:1px solid #ddd; text-align:center; font-weight:bold;">${simpleDate}</td>
                 <td style="padding:8px; border:1px solid #ddd; text-align:center;">${item.type}</td>
                 <td style="padding:8px; border:1px solid #ddd; text-align:center;">
-                    <button onclick="cancelLeave('${id}', '${simpleDate}')" 
+                    <button type="button" onclick="cancelLeave('${id}', '${simpleDate}')" 
                         style="background:#dc3545; color:white; border:none; padding:6px 10px; border-radius:4px; cursor:pointer;">
                         取消
                     </button>
@@ -215,11 +208,17 @@ myLeaves.forEach(item => {
     html += '</table>';
     listDiv.innerHTML = html;
 }
+
 /**
- * 6. 執行刪除 (取消假期)
+ * 6. 執行刪除 (強化取消邏輯)
  */
 function cancelLeave(empId, dateStr) {
     if (!confirm(`確定要取消 ${dateStr} 的假期嗎？`)) return;
+
+    // 將按鈕暫時停用，避免重複點擊
+    const btn = event.target;
+    btn.disabled = true;
+    btn.innerText = "處理中...";
 
     fetch(GOOGLE_SCRIPT_URL, {
         method: "POST",
@@ -231,8 +230,15 @@ function cancelLeave(empId, dateStr) {
         })
     })
     .then(() => {
-        alert("要求已提交！");
-        location.reload(); // 重新整理以刷新名額
+        // 重要：給予後端 1.5 秒的處理時間，再刷新頁面
+        alert("要求已提交！名額更新約需 1-2 秒。");
+        setTimeout(() => {
+            location.reload(); 
+        }, 1500);
     })
-    .catch(err => alert("取消失敗，請檢查網路連接"));
+    .catch(err => {
+        alert("取消失敗，請檢查網路連線");
+        btn.disabled = false;
+        btn.innerText = "取消";
+    });
 }
