@@ -52,22 +52,25 @@
             <hr>
 
             <div id="calendar-container">
-                <h3 style="margin-bottom: 10px;">假期名額預覽 & 日期選取</h3>
+                <h3>假期名額預覽 & 日期選取</h3>
                 <p style="text-align:center; font-size: 0.85em; color: #666; margin-bottom: 15px;">
                     (點擊日期格子進行選取/取消)
                 </p>
                 <div id="calendar"></div>
             </div>
-<hr>
-<div id="manage-section" style="margin-top: 30px;">
-    <h3>取消/修正假期</h3>
-    <div class="form-group" style="display: flex; gap: 10px;">
-        <input type="text" id="checkID" placeholder="輸入員工工號查詢 (例如: ST123)">
-        <button type="button" id="btnCheck" style="width: 120px; padding: 10px;">查詢</button>
-    </div>
-    <div id="my-leaves-list">
-        </div>
-</div>
+
+            <hr>
+
+            <div id="manage-section">
+                <h3>取消/修正假期</h3>
+                <p style="font-size: 0.8em; color: #888; margin-bottom: 10px;">輸入工號可查詢並取消「已申請」的假期：</p>
+                <div class="form-group" style="display: flex; gap: 8px;">
+                    <input type="text" id="checkID" placeholder="輸入員工工號 (例如: ST123)">
+                    <button type="button" id="btnCheck" class="secondary-btn">查詢</button>
+                </div>
+                <div id="my-leaves-list"></div>
+            </div>
+
         </div>
     </div>
 
