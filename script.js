@@ -16,9 +16,16 @@ document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
     
     var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        locale: 'zh-tw',
-        height: 'auto',
+    initialView: 'dayGridMonth',
+    locale: 'zh-tw',
+    height: 'auto',
+    
+    // --- 重新排列按鈕位置 ---
+    headerToolbar: {
+        left: 'today',          // [today] 移到左上角
+        center: 'title',         // 月份標題保留在中間
+        right: 'prev,next'       // [左箭頭][右箭頭] 移到右上角
+    },
         // 點擊日期自動填寫功能
         dateClick: function(info) {
             const selectedDate = info.dateStr;
