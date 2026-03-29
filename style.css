@@ -246,3 +246,45 @@ hr {
     .container { padding: 15px; }
     .date-row { grid-template-columns: 1fr; } /* 手機日期改垂直 */
 }
+/* --- 月曆工具列按鈕美化 --- */
+
+/* 調整工具列容器，確保左右對齊 */
+.fc .fc-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5em !important;
+}
+
+/* 讓中間的標題字體不要太大，避免擠到按鈕 */
+.fc .fc-toolbar-title {
+    font-size: 1.1em !important;
+    margin: 0 5px !important;
+}
+
+/* [Today] 按鈕樣式：讓它看起來更像一個標籤 */
+.fc .fc-today-button {
+    background-color: #f8f9fa !important;
+    color: #1a73e8 !important;
+    border: 1px solid #1a73e8 !important;
+    opacity: 1 !important; /* 確保不是半透明 */
+    padding: 4px 10px !important;
+    text-transform: capitalize;
+}
+
+/* [左][右] 箭頭按鈕：圓角化與深藍色 */
+.fc .fc-button-group > .fc-button {
+    background-color: #1a73e8 !important;
+    border: none !important;
+    margin-left: 2px !important;
+}
+
+/* 手機版微調：如果標題還是太長，縮小字體 */
+@media (max-width: 400px) {
+    .fc .fc-toolbar-title {
+        font-size: 0.95em !important;
+    }
+    .fc .fc-button {
+        padding: 2px 5px !important;
+    }
+}
