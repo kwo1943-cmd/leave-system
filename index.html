@@ -41,7 +41,15 @@
 <div id="daysDisplay" style="display: none;">
     總計：<span id="totalDays">0</span> 天
 </div>
-
+<div id="selected-dates-container" style="margin-bottom: 20px;">
+    <label>已選取日期清單：</label>
+    <div id="date-tags" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
+        <span style="color: #999; font-size: 0.9em;">請點擊下方月曆選取日期...</span>
+    </div>
+    <div id="daysDisplay" style="margin-top: 10px; font-weight: bold; color: #1a73e8;">
+        總計選取：<span id="totalDays">0</span> 天
+    </div>
+</div>
                     <div class="form-group">
                         <label for="remarks">備註：</label>
                         <textarea id="remarks" rows="3" placeholder="請輸入備註內容..."></textarea>
