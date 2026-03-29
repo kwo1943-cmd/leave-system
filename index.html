@@ -3,11 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>員工請假申請系統</title>
+    <title>Team2員工請假申請系統</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
+<div class="container" style="max-width: 900px; display: flex; gap: 20px; flex-wrap: wrap;">
+    <div id="calendar-container" style="flex: 1; min-width: 350px;">
+        <h3 style="text-align:center; color:#1a73e8;">假期名額預覽</h3>
+        <div id="calendar"></div>
+    </div>
+
+    <div id="form-container" style="flex: 1; min-width: 300px;">
         <h2>假期申請表</h2>
         <form id="leaveForm">
             <div class="form-group">
@@ -31,6 +39,9 @@
                 </div>
                 <div class="form-group">
                     <label for="endDate">結束日期：</label>
+                    <div class="form-group" id="daysDisplay" style="display: none; color: #1a73e8; font-weight: bold; text-align: right; margin-top: -10px; margin-bottom: 15px;">
+    總計：<span id="totalDays">0</span> 天
+</div>
                     <input type="date" id="endDate" required>
                 </div>
             </div>
