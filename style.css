@@ -337,3 +337,19 @@ hr {
         padding: 4px 8px !important;
     }
 }
+.date-tag {
+    background: #1a73e8;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    display: inline-block;
+    margin: 2px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* 讓選中的格子在月曆上更有感覺 */
+.fc-daygrid-day:hover {
+    cursor: pointer;
+    background-color: #f1f3f4;
+}
