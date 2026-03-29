@@ -49,32 +49,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
     calendar.render();
 
-    // 從 Google Sheets 抓取已申請資料並統計
-    function fetchEvents(info, successCallback, failureCallback) {
-        fetch(GOOGLE_SCRIPT_URL)
-            .then(res => res.json())
-            .then(allDatesArray => {
-                let counts = {};
-                // allDatesArray 是從 doGet 傳回的扁平化日期陣列
-                allDatesArray.forEach(date => {
-                    counts[date] = (counts[date] || 0) + 1;
-                });
+  function fetchEvents(info, successCallback, failureCallback) {
+    fetch(GOOGLE_SCRIPT_URL)
+        .then(res => res.json())
+        .then(allDatesArray => {
+            let counts = {};
+            // 直接統計陣列中每個日期出現的次數
+            allDatesArray.forEach(date => {
+                counts[date] = (counts[date] || 0) + 1;
+            });
 
-                let events = Object.keys(counts).map(date => {
-                    let count = counts[date];
-                    let isFull = count >= DAILY_LIMIT;
-                    return {
-                        title: isFull ? "❌ 已滿" : `餘額: ${DAILY_LIMIT - count}`,
-                        start: date,
-                        color: isFull ? "#ff4d4d" : "#28a745",
-                        allDay: true
-                    };
-                });
-                successCallback(events);
-            })
-            .catch(err => console.error("抓取資料失敗:", err));
-    }
-});
+            let events = Object.keys(counts).map(date => {
+                let count = counts[date];
+                let isFull = count >= DAILY_LIMIT;
+                return {
+                    title: isFull ? "❌ 已滿" : `餘額: ${DAILY_LIMIT - count}`,
+                    start: date,
+                    color: isFull ? "#ff4d4d" : "#28a745",
+                    allDay: true,
+                    // 為了美觀，不顯示背景邊框
+                    display: 'block'
+                };
+            });
+            successCallback(events);
+        })
+        .catch(err => console.error("抓取資料失敗:", err));
+}
 
 // 更新介面上的選取狀態
 function updateDateUI() {
