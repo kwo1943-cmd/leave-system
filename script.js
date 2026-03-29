@@ -14,6 +14,42 @@ const DAILY_LIMIT = 5; // 設定每日申請上限人數
 document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
+        dateClick: function(info) {
+        const selectedDate = info.dateStr; // 取得點擊的日期 (格式 YYYY-MM-DD)
+        const todayStr = new Date().toISOString().split('T')[0];
+
+        // 防呆：如果點擊的是過去的日期，不執行填寫
+        if (selectedDate < todayStr) {
+            alert("不能選擇過去的日期！");
+            return;
+        }
+
+        // 自動填寫到表單中
+        document.getElementById('startDate').value = selectedDate;
+        document.getElementById('endDate').value = selectedDate;
+
+        // 觸發天數計算功能 (如果之前有寫 calculateDays 函數)
+        if (typeof calculateDays === "function") {
+            calculateDays();
+        }
+
+        // 畫面自動捲動回到表單頂部，方便員工繼續填寫
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+
+        // 可選：給予一個簡單的提示
+        console.log("已選取日期: " + selectedDate);
+    },
+    // -----------------------
+
+    events: function(info, successCallback, failureCallback) {
+        // ... 你原本抓取 Google Sheets 資料的 fetch 邏輯 ...
+    }
+});
+
+calendar.render();
         initialView: 'dayGridMonth',
         locale: 'zh-tw',
         events: fetchEvents // 動態載入事件
