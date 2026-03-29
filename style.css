@@ -30,3 +30,45 @@ button {
 }
 button:disabled { background-color: #ccc; }
 #message { margin-top: 20px; padding: 10px; border-radius: 6px; text-align: center; display: none; }
+/* 外層容器 */
+.main-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    display: flex;
+    gap: 30px;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    max-width: 1000px; /* 加寬以容納兩欄 */
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+#calendar-container {
+    flex: 1.5; /* 月曆佔寬一點 */
+    min-width: 350px;
+}
+
+#form-container {
+    flex: 1;
+    min-width: 300px;
+}
+
+/* 這是讓月曆顯現的關鍵 */
+#calendar {
+    max-height: 600px;
+    background: #fff;
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+}
+
+/* 調整 FullCalendar 字體大小適配手機 */
+.fc { font-size: 0.9em; }
