@@ -288,3 +288,52 @@ hr {
         padding: 2px 5px !important;
     }
 }
+/* --- 強制月曆工具列在一行內顯示 --- */
+
+.fc .fc-toolbar {
+    display: flex !important;
+    flex-direction: row !important; /* 強制水平排列 */
+    justify-content: space-between !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important; /* 禁止換行 */
+    margin-bottom: 15px !important;
+    width: 100%;
+}
+
+/* 調整左側 Today 按鈕 */
+.fc .fc-toolbar-chunk:nth-child(1) {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+}
+
+/* 調整中間標題 */
+.fc .fc-toolbar-chunk:nth-child(2) {
+    flex: 2;
+    display: flex;
+    justify-content: center;
+}
+
+/* 調整右側箭頭 */
+.fc .fc-toolbar-chunk:nth-child(3) {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* 縮小手機上的字體，防止擠壓導致自動換行 */
+@media (max-width: 480px) {
+    .fc .fc-toolbar-title {
+        font-size: 0.9em !important; /* 縮小月份字體 */
+        white-space: nowrap;
+    }
+
+    .fc .fc-button {
+        padding: 4px 6px !important; /* 縮小按鈕 */
+        font-size: 0.75em !important;
+    }
+
+    .fc .fc-today-button {
+        padding: 4px 8px !important;
+    }
+}
