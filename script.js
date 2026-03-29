@@ -9,58 +9,45 @@ const daysDisplay = document.getElementById('daysDisplay');
 const today = new Date().toISOString().split('T')[0];
 startDateInput.setAttribute('min', today);
 endDateInput.setAttribute('min', today);
-const DAILY_LIMIT = 5; // 設定每日申請上限人數
+
+const DAILY_LIMIT = 5; 
 
 document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
+    
     var calendar = new FullCalendar.Calendar(calendarEl, {
-        dateClick: function(info) {
-        const selectedDate = info.dateStr; // 取得點擊的日期 (格式 YYYY-MM-DD)
-        const todayStr = new Date().toISOString().split('T')[0];
-
-        // 防呆：如果點擊的是過去的日期，不執行填寫
-        if (selectedDate < todayStr) {
-            alert("不能選擇過去的日期！");
-            return;
-        }
-
-        // 自動填寫到表單中
-        document.getElementById('startDate').value = selectedDate;
-        document.getElementById('endDate').value = selectedDate;
-
-        // 觸發天數計算功能 (如果之前有寫 calculateDays 函數)
-        if (typeof calculateDays === "function") {
-            calculateDays();
-        }
-
-        // 畫面自動捲動回到表單頂部，方便員工繼續填寫
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-
-        // 可選：給予一個簡單的提示
-        console.log("已選取日期: " + selectedDate);
-    },
-    // -----------------------
-
-    events: function(info, successCallback, failureCallback) {
-        // ... 你原本抓取 Google Sheets 資料的 fetch 邏輯 ...
-    }
-});
-
-calendar.render();
         initialView: 'dayGridMonth',
         locale: 'zh-tw',
-        events: fetchEvents // 動態載入事件
+        height: 'auto',
+        // 點擊日期自動填寫功能
+        dateClick: function(info) {
+            const selectedDate = info.dateStr;
+            const todayStr = new Date().toISOString().split('T')[0];
+
+            if (selectedDate < todayStr) {
+                alert("不能選擇過去的日期！");
+                return;
+            }
+
+            startDateInput.value = selectedDate;
+            endDateInput.value = selectedDate;
+
+            // 觸發天數計算
+            calculateDays();
+
+            // 捲動到頂部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+        // 動態載入事件
+        events: fetchEvents 
     });
+
     calendar.render();
 
     function fetchEvents(info, successCallback, failureCallback) {
         fetch(GOOGLE_SCRIPT_URL)
             .then(res => res.json())
             .then(data => {
-                // 統計每天的人數
                 let counts = {};
                 data.forEach(leave => {
                     let d = new Date(leave.start);
@@ -72,7 +59,6 @@ calendar.render();
                     }
                 });
 
-                // 轉換為月曆格式
                 let events = Object.keys(counts).map(date => {
                     let count = counts[date];
                     let isFull = count >= DAILY_LIMIT;
@@ -84,9 +70,11 @@ calendar.render();
                     };
                 });
                 successCallback(events);
-            });
+            })
+            .catch(err => console.error("抓取資料失敗:", err));
     }
 });
+
 // 自動計算天數的函數
 function calculateDays() {
     const start = new Date(startDateInput.value);
@@ -97,8 +85,8 @@ function calculateDays() {
             daysDisplay.style.display = "block";
             totalDaysSpan.innerText = "日期錯誤";
             totalDaysSpan.style.color = "red";
+            return "日期錯誤";
         } else {
-            // 計算天數：(結束 - 開始) / 一天的毫秒數 + 1 (包含當天)
             const diffTime = Math.abs(end - start);
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
             daysDisplay.style.display = "block";
@@ -114,6 +102,7 @@ function calculateDays() {
 startDateInput.addEventListener('change', calculateDays);
 endDateInput.addEventListener('change', calculateDays);
 
+// 表單提交
 document.getElementById('leaveForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const days = calculateDays();
@@ -127,7 +116,11 @@ document.getElementById('leaveForm').addEventListener('submit', function(e) {
     submitBtn.innerText = "提交中...";
 
     const now = new Date();
-    const timestamp = now.toLocaleString('zh-TW', { hour12: false });
+    // 修正時間戳記：精確到秒
+    const timestamp = now.getFullYear() + '/' + (now.getMonth()+1) + '/' + now.getDate() + ' ' + 
+                      now.getHours().toString().padStart(2,'0') + ':' + 
+                      now.getMinutes().toString().padStart(2,'0') + ':' + 
+                      now.getSeconds().toString().padStart(2,'0');
 
     const formData = {
         applied_at: timestamp,
@@ -135,7 +128,7 @@ document.getElementById('leaveForm').addEventListener('submit', function(e) {
         leave_type: document.getElementById('leaveType').value,
         start_date: startDateInput.value,
         end_date: endDateInput.value,
-        total_days: days, // 新增：傳送總天數
+        total_days: days,
         remarks: document.getElementById('remarks').value
     };
 
@@ -145,11 +138,15 @@ document.getElementById('leaveForm').addEventListener('submit', function(e) {
         body: JSON.stringify(formData)
     })
     .then(() => {
-        document.getElementById('message').style.display = "block";
-        document.getElementById('message').innerHTML = `✅ 成功！共請假 ${days} 天。<br><small>提交時間：${timestamp}</small>`;
+        const msgDiv = document.getElementById('message');
+        msgDiv.style.display = "block";
+        msgDiv.style.backgroundColor = "#d4edda";
+        msgDiv.innerHTML = `✅ 成功！共請假 ${days} 天。<br><small>提交時間：${timestamp}</small>`;
         this.reset();
         daysDisplay.style.display = "none";
+        alert("提交成功！");
     })
+    .catch(err => alert("提交失敗，請檢查網路！"))
     .finally(() => {
         submitBtn.disabled = false;
         submitBtn.innerText = "提交申請";
