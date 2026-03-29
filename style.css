@@ -122,7 +122,7 @@ hr {
 }
 
 #calendar {
-    min-height: 400px;
+    height: auto;
     background: #fff;
     padding: 5px;
     border: 1px solid #f0f0f0;
