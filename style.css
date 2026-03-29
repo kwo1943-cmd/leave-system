@@ -130,21 +130,70 @@ hr {
 }
 
 /* FullCalendar 內部元件微調 (適配窄版面) */
-.fc .fc-toolbar-title {
-    font-size: 1.1em !important;
-    color: #333;
+#calendar {
+    background: #fff;
+    padding: 5px;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    /* 讓月曆在手機上保持固定比例，不會扁掉 */
+    min-height: 420px; 
 }
 
-.fc .fc-button {
-    padding: 4px 8px !important;
-    font-size: 0.85em !important;
-    background-color: #1a73e8 !important;
+/* 1. 調整標題列（年份月份） */
+.fc .fc-toolbar {
+    flex-direction: column; /* 手機上按鈕跟標題分兩列，避免擠壓 */
+    gap: 8px;
+    margin-bottom: 10px !important;
+}
+
+.fc .fc-toolbar-title {
+    font-size: 1.1em !important;
+}
+
+/* 2. 讓格子更像正方形，方便手指點擊 */
+.fc .fc-daygrid-day {
+    height: 60px !important; /* 強制格子高度 */
+}
+
+/* 3. 調整日期數字的位置 */
+.fc .fc-daygrid-day-top {
+    justify-content: center; /* 數字居中 */
+    font-size: 0.85em;
+}
+
+/* 4. 優化「餘額/已滿」標籤樣式 */
+.fc-event {
+    border-radius: 4px !important;
+    padding: 2px 0 !important;
+    text-align: center !important;
+    font-weight: bold !important;
+    font-size: 0.75em !important; /* 字體縮小以防溢出 */
+    margin: 1px 2px !important;
     border: none !important;
 }
 
-.fc-daygrid-event {
-    font-size: 0.8em !important;
-    padding: 2px !important;
+/* 5. 隱藏週次標題中的「週」字 (手機版省空間) */
+@media (max-width: 480px) {
+    .fc .fc-col-header-cell-cushion {
+        font-size: 0.8em;
+        padding: 5px 0;
+    }
+    
+    /* 讓月曆工具列按鈕更小一點 */
+    .fc .fc-button {
+        padding: 2px 6px !important;
+        font-size: 0.75em !important;
+    }
+
+    /* 點擊時的藍色高亮效果 */
+    .fc .fc-daygrid-day.fc-day-today {
+        background-color: #f8f9fa !important;
+    }
+}
+
+/* 讓捲動更流暢 */
+.fc-scroller {
+    overflow: hidden !important; 
 }
 
 /* 手機版優化 */
