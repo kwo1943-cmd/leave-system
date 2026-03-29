@@ -195,11 +195,9 @@ function searchMyLeaves() {
             </tr>
     `;
     
-    myLeaves.forEach(item => {
-        // --- 關鍵修改：簡化日期顯示 ---
-        // 假設 item.date 是 "2026-03-30T00:00:00.000Z" 或 "2026-03-30 00:00:00"
-        // 我們只取前 10 個字元 (YYYY-MM-DD)
-        const simpleDate = item.date.split(' ')[0].split('T')[0]; 
+myLeaves.forEach(item => {
+        // --- 核心修正：直接使用後端傳來的 item.date，不需裁切 ---
+        const simpleDate = item.date; 
 
         html += `
             <tr>
