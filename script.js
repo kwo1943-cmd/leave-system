@@ -7,6 +7,37 @@ const dateTagsContainer = document.getElementById('date-tags');
 const DAILY_LIMIT = 5; // 每日名額上限
 let selectedDates = []; // 儲存員工本次選取的日期
 
+// --- 1. 定義抓取資料的函數 (放在最外層確保 Calendar 能讀取) ---
+function fetchEvents(info, successCallback, failureCallback) {
+    fetch(GOOGLE_SCRIPT_URL)
+        .then(res => res.json())
+        .then(allDatesArray => {
+            let counts = {};
+            // 統計每個日期出現次數
+            allDatesArray.forEach(date => {
+                counts[date] = (counts[date] || 0) + 1;
+            });
+
+            let events = Object.keys(counts).map(date => {
+                let count = counts[date];
+                let isFull = count >= DAILY_LIMIT;
+                return {
+                    title: isFull ? "❌ 已滿" : `餘額: ${DAILY_LIMIT - count}`,
+                    start: date,
+                    color: isFull ? "#ff4d4d" : "#28a745",
+                    allDay: true,
+                    display: 'block'
+                };
+            });
+            successCallback(events);
+        })
+        .catch(err => {
+            console.error("抓取資料失敗:", err);
+            failureCallback(err);
+        });
+}
+
+// --- 2. 初始化月曆 ---
 document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
     
@@ -24,7 +55,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const dateStr = info.dateStr;
             const todayStr = new Date().toISOString().split('T')[0];
 
-            // 防呆：不能選過去
             if (dateStr < todayStr) {
                 alert("不能選擇過去的日期！");
                 return;
@@ -32,54 +62,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const index = selectedDates.indexOf(dateStr);
             if (index > -1) {
-                // 已選過，則取消選取
                 selectedDates.splice(index, 1);
                 info.dayEl.style.backgroundColor = ""; 
             } else {
-                // 未選過，則加入清單
                 selectedDates.push(dateStr);
-                info.dayEl.style.backgroundColor = "#e8f0fe"; // 淺藍色高亮
+                info.dayEl.style.backgroundColor = "#e8f0fe"; 
             }
-
             updateDateUI();
         },
-        // 動態載入名額事件
-        events: fetchEvents 
+        events: fetchEvents // 這裡引用外層的函數
     });
 
     calendar.render();
+});
 
-  function fetchEvents(info, successCallback, failureCallback) {
-    fetch(GOOGLE_SCRIPT_URL)
-        .then(res => res.json())
-        .then(allDatesArray => {
-            let counts = {};
-            // 直接統計陣列中每個日期出現的次數
-            allDatesArray.forEach(date => {
-                counts[date] = (counts[date] || 0) + 1;
-            });
-
-            let events = Object.keys(counts).map(date => {
-                let count = counts[date];
-                let isFull = count >= DAILY_LIMIT;
-                return {
-                    title: isFull ? "❌ 已滿" : `餘額: ${DAILY_LIMIT - count}`,
-                    start: date,
-                    color: isFull ? "#ff4d4d" : "#28a745",
-                    allDay: true,
-                    // 為了美觀，不顯示背景邊框
-                    display: 'block'
-                };
-            });
-            successCallback(events);
-        })
-        .catch(err => console.error("抓取資料失敗:", err));
-}
-
-// 更新介面上的選取狀態
+// --- 3. 更新介面 UI ---
 function updateDateUI() {
-    selectedDates.sort(); // 按日期順序排列
-    
+    selectedDates.sort();
     if (selectedDates.length === 0) {
         dateTagsContainer.innerHTML = '<span style="color: #999; font-size: 0.9em;">請點擊月曆選取日期...</span>';
         daysDisplay.style.display = "none";
@@ -92,7 +91,7 @@ function updateDateUI() {
     }
 }
 
-// 表單提交邏輯
+// --- 4. 表單提交邏輯 ---
 document.getElementById('leaveForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
@@ -115,7 +114,7 @@ document.getElementById('leaveForm').addEventListener('submit', function(e) {
         applied_at: timestamp,
         employee_id: document.getElementById('employeeID').value,
         leave_type: document.getElementById('leaveType').value,
-        dates: selectedDates.join(', '), // 將所有日期合成字串
+        dates: selectedDates.join(', '), 
         total_days: selectedDates.length,
         remarks: document.getElementById('remarks').value
     };
@@ -126,22 +125,12 @@ document.getElementById('leaveForm').addEventListener('submit', function(e) {
         body: JSON.stringify(formData)
     })
     .then(() => {
-        const msgDiv = document.getElementById('message');
-        msgDiv.style.display = "block";
-        msgDiv.style.backgroundColor = "#d4edda";
-        msgDiv.innerHTML = `✅ 成功！共請假 ${selectedDates.length} 天。<br>日期：${formData.dates}`;
-        
-        // 重置表單與清單
-        this.reset();
-        selectedDates = [];
-        updateDateUI();
-        
-        // 清除月曆上的手動高亮 (重新渲染月曆)
-        location.reload(); 
         alert("提交成功！");
+        // 直接重新整理頁面是最乾淨的作法，可以刷新月曆名額
+        location.reload(); 
     })
-    .catch(err => alert("提交失敗，請檢查網路！"))
-    .finally(() => {
+    .catch(err => {
+        alert("提交失敗，請檢查網路！");
         submitBtn.disabled = false;
         submitBtn.innerText = "提交申請";
     });
