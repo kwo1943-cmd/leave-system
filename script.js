@@ -10,8 +10,75 @@ const today = new Date().toISOString().split('T')[0];
 startDateInput.setAttribute('min', today);
 endDateInput.setAttribute('min', today);
 
-const DAILY_LIMIT = 5; 
+const DAILY_LIMIT = 5;
+let selectedDates = []; // 存儲員工本次選取的日期
 
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'zh-tw',
+        headerToolbar: { left: 'today', center: 'title', right: 'prev,next' },
+        selectable: false, // 我們自定義點擊邏輯
+
+        // 點擊選取/取消邏輯
+        dateClick: function(info) {
+            const dateStr = info.dateStr;
+            const todayStr = new Date().toISOString().split('T')[0];
+            if (dateStr < todayStr) return alert("不能選擇過去的日期！");
+
+            const index = selectedDates.indexOf(dateStr);
+            if (index > -1) {
+                selectedDates.splice(index, 1);
+                info.dayEl.style.backgroundColor = ""; // 取消高亮
+            } else {
+                selectedDates.push(dateStr);
+                info.dayEl.style.backgroundColor = "#e8f0fe"; // 選中高亮
+            }
+            updateDateUI();
+        },
+
+        // 載入名額資料
+        events: function(info, successCallback, failureCallback) {
+            fetch(GOOGLE_SCRIPT_URL)
+                .then(res => res.json())
+                .then(allDatesArray => {
+                    let counts = {};
+                    // allDatesArray 現在是扁平的日期陣列 ["2026-04-10", "2026-04-10", "2026-04-11"...]
+                    allDatesArray.forEach(date => {
+                        counts[date] = (counts[date] || 0) + 1;
+                    });
+
+                    let events = Object.keys(counts).map(date => {
+                        let count = counts[date];
+                        let isFull = count >= DAILY_LIMIT;
+                        return {
+                            title: isFull ? "❌ 已滿" : `餘額: ${DAILY_LIMIT - count}`,
+                            start: date,
+                            allDay: true,
+                            backgroundColor: isFull ? "#ff4d4d" : "#28a745",
+                            borderColor: "transparent"
+                        };
+                    });
+                    successCallback(events);
+                });
+        }
+    });
+    calendar.render();
+});
+
+function updateDateUI() {
+    selectedDates.sort();
+    const container = document.getElementById('date-tags');
+    const totalSpan = document.getElementById('totalDays');
+    
+    if (selectedDates.length === 0) {
+        container.innerHTML = '<span style="color: #999;">請點擊月曆選取日期...</span>';
+    } else {
+        container.innerHTML = selectedDates.map(d => `<span class="date-tag">${d}</span>`).join('');
+    }
+    totalSpan.innerText = selectedDates.length;
+}
 document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
     
