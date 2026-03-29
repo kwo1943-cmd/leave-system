@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
         locale: 'zh-tw',
         height: 'auto',
         headerToolbar: {
-            left: '今日',
+            left: 'today',
             center: 'title',
             right: 'prev,next'
         },
