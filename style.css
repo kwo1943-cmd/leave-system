@@ -1,4 +1,4 @@
-/* 基礎設定與字體 */
+/* --- 1. 基礎設定與字體 --- */
 body {
     font-family: "Microsoft JhengHei", "Heiti TC", sans-serif;
     background-color: #f4f7f9;
@@ -8,27 +8,25 @@ body {
     justify-content: center;
 }
 
-/* 主容器：改為垂直排列 */
 .container {
     background: #ffffff;
     padding: 25px;
     border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 600px; /* 垂直排版建議縮小寬度 */
+    max-width: 600px;
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-/* 標題樣式 */
 h2, h3 {
     text-align: center;
     color: #1a73e8;
     margin-top: 0;
 }
 
-/* 表單群組 */
+/* --- 2. 表單元件樣式 --- */
 .form-group {
     margin-bottom: 15px;
 }
@@ -55,66 +53,33 @@ input:focus, select:focus, textarea:focus {
     border-color: #1a73e8;
 }
 
-/* 日期橫排 */
-/* --- 日期格子優化 --- */
-
-/* 確保不論螢幕大小，日期都在同一列 */
-.date-row {
-    display: flex;
-    gap: 10px; /* 格子之間的間距 */
-    margin-bottom: 15px;
+/* --- 3. 已選日期標籤 (Tag) 樣式 --- */
+#selected-dates-container {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px dashed #dfe1e5;
 }
 
-.date-row .form-group {
-    flex: 1; /* 讓兩個格子平分寬度 */
-    margin-bottom: 0; /* 移除底部間距，讓排版更緊湊 */
-}
-
-/* 針對輸入框本身的精細調整 */
-input[type="date"] {
-    padding: 8px 5px; /* 縮小上下內邊距，適合手機高度 */
-    font-size: 13px;  /* 稍微縮小字體，防止日期字串溢出 */
-    height: 40px;     /* 固定高度，讓視覺更統一 */
-    -webkit-appearance: none; /* 移除 iOS 預設陰影 */
-    background-color: #fafafa;
-}
-
-/* 讓 Label（開始/結束日期文字）更小一點，節省空間 */
-.date-row label {
+.date-tag {
+    background-color: #1a73e8;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
     font-size: 0.85em;
-    margin-bottom: 4px;
-    color: #666;
+    display: inline-block;
+    margin: 3px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* 天數顯示區塊的微調：緊貼在日期下方 */
 #daysDisplay {
-    margin-top: -5px;
-    margin-bottom: 10px;
-    padding: 5px 10px;
-    font-size: 0.85em;
-    background-color: #f0f7ff;
-    border-radius: 4px;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #1a73e8;
     text-align: right;
 }
 
-/* --- 手機版特別覆蓋 (Media Query) --- */
-@media (max-width: 480px) {
-    .container {
-        padding: 15px; /* 縮小外層留白 */
-    }
-
-    h2 {
-        font-size: 1.4em; /* 縮小標題 */
-        margin-bottom: 15px;
-    }
-
-    /* 確保在極小螢幕下字體不會跑掉 */
-    input[type="date"] {
-        font-size: 12px;
-    }
-}
-
-/* 提交按鈕 */
+/* --- 4. 提交按鈕與訊息 --- */
 button {
     width: 100%;
     padding: 14px;
@@ -128,238 +93,90 @@ button {
     transition: background 0.3s, transform 0.1s;
 }
 
-button:hover {
-    background-color: #1557b0;
-}
+button:hover { background-color: #1557b0; }
+button:active { transform: scale(0.98); }
+button:disabled { background-color: #ccc; }
 
-button:active {
-    transform: scale(0.98);
-}
-
-button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-
-/* 提交訊息提示 */
 #message {
     margin-top: 15px;
     padding: 12px;
     border-radius: 8px;
     text-align: center;
     display: none;
-    font-size: 0.95em;
-    line-height: 1.5;
 }
 
-/* 分隔線 */
 hr {
     border: 0;
     border-top: 1px solid #eee;
     margin: 10px 0;
 }
 
-/* 月曆容器設定 */
-#calendar-container {
-    width: 100%;
-    margin-top: 10px;
-}
-
-#calendar {
-    height: auto;
-    background: #fff;
-    padding: 5px;
-    border: 1px solid #f0f0f0;
-    border-radius: 8px;
-}
-
-/* FullCalendar 內部元件微調 (適配窄版面) */
+/* --- 5. 月曆核心樣式與手機優化 --- */
 #calendar {
     background: #fff;
     padding: 5px;
     border: 1px solid #f0f0f0;
     border-radius: 8px;
-    /* 讓月曆在手機上保持固定比例，不會扁掉 */
     min-height: 420px; 
 }
 
-/* 1. 調整標題列（年份月份） */
+/* 強制工具列橫向並排 */
 .fc .fc-toolbar {
-    flex-direction: column; /* 手機上按鈕跟標題分兩列，避免擠壓 */
-    gap: 8px;
-    margin-bottom: 10px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    margin-bottom: 15px !important;
+    width: 100%;
 }
+
+.fc .fc-toolbar-chunk:nth-child(1) { flex: 1; display: flex; justify-content: flex-start; }
+.fc .fc-toolbar-chunk:nth-child(2) { flex: 2; display: flex; justify-content: center; }
+.fc .fc-toolbar-chunk:nth-child(3) { flex: 1; display: flex; justify-content: flex-end; }
 
 .fc .fc-toolbar-title {
     font-size: 1.1em !important;
+    white-space: nowrap;
 }
 
-/* 2. 讓格子更像正方形，方便手指點擊 */
-.fc .fc-daygrid-day {
-    height: 60px !important; /* 強制格子高度 */
+/* 按鈕美化 */
+.fc .fc-today-button {
+    background-color: #f8f9fa !important;
+    color: #1a73e8 !important;
+    border: 1px solid #1a73e8 !important;
+    padding: 4px 10px !important;
+    opacity: 1 !important;
 }
 
-/* 3. 調整日期數字的位置 */
-.fc .fc-daygrid-day-top {
-    justify-content: center; /* 數字居中 */
-    font-size: 0.85em;
+.fc .fc-button-group > .fc-button {
+    background-color: #1a73e8 !important;
+    border: none !important;
 }
 
-/* 4. 優化「餘額/已滿」標籤樣式 */
+/* 格子與事件標籤 */
+.fc .fc-daygrid-day { height: 60px !important; cursor: pointer; }
+.fc .fc-daygrid-day-top { justify-content: center; font-size: 0.85em; }
+
 .fc-event {
     border-radius: 4px !important;
     padding: 2px 0 !important;
     text-align: center !important;
     font-weight: bold !important;
-    font-size: 0.75em !important; /* 字體縮小以防溢出 */
+    font-size: 0.72em !important;
     margin: 1px 2px !important;
     border: none !important;
 }
 
-/* 5. 隱藏週次標題中的「週」字 (手機版省空間) */
-@media (max-width: 480px) {
-    .fc .fc-col-header-cell-cushion {
-        font-size: 0.8em;
-        padding: 5px 0;
-    }
-    
-    /* 讓月曆工具列按鈕更小一點 */
-    .fc .fc-button {
-        padding: 2px 6px !important;
-        font-size: 0.75em !important;
-    }
-
-    /* 點擊時的藍色高亮效果 */
-    .fc .fc-daygrid-day.fc-day-today {
-        background-color: #f8f9fa !important;
-    }
-}
-
-/* 讓捲動更流暢 */
-.fc-scroller {
-    overflow: hidden !important; 
-}
-
-/* 手機版優化 */
+/* --- 6. 全局手機版調整 --- */
 @media (max-width: 480px) {
     body { padding: 10px; }
     .container { padding: 15px; }
-    .date-row { grid-template-columns: 1fr; } /* 手機日期改垂直 */
-}
-/* --- 月曆工具列按鈕美化 --- */
-
-/* 調整工具列容器，確保左右對齊 */
-.fc .fc-toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5em !important;
+    h2 { font-size: 1.4em; }
+    
+    .fc .fc-toolbar-title { font-size: 0.9em !important; }
+    .fc .fc-button { padding: 4px 6px !important; font-size: 0.75em !important; }
+    .fc .fc-col-header-cell-cushion { font-size: 0.8em; }
 }
 
-/* 讓中間的標題字體不要太大，避免擠到按鈕 */
-.fc .fc-toolbar-title {
-    font-size: 1.1em !important;
-    margin: 0 5px !important;
-}
-
-/* [Today] 按鈕樣式：讓它看起來更像一個標籤 */
-.fc .fc-today-button {
-    background-color: #f8f9fa !important;
-    color: #1a73e8 !important;
-    border: 1px solid #1a73e8 !important;
-    opacity: 1 !important; /* 確保不是半透明 */
-    padding: 4px 10px !important;
-    text-transform: capitalize;
-}
-
-/* [左][右] 箭頭按鈕：圓角化與深藍色 */
-.fc .fc-button-group > .fc-button {
-    background-color: #1a73e8 !important;
-    border: none !important;
-    margin-left: 2px !important;
-}
-
-/* 手機版微調：如果標題還是太長，縮小字體 */
-@media (max-width: 400px) {
-    .fc .fc-toolbar-title {
-        font-size: 0.95em !important;
-    }
-    .fc .fc-button {
-        padding: 2px 5px !important;
-    }
-}
-/* --- 強制月曆工具列在一行內顯示 --- */
-
-.fc .fc-toolbar {
-    display: flex !important;
-    flex-direction: row !important; /* 強制水平排列 */
-    justify-content: space-between !important;
-    align-items: center !important;
-    flex-wrap: nowrap !important; /* 禁止換行 */
-    margin-bottom: 15px !important;
-    width: 100%;
-}
-
-/* 調整左側 Today 按鈕 */
-.fc .fc-toolbar-chunk:nth-child(1) {
-    flex: 1;
-    display: flex;
-    justify-content: flex-start;
-}
-
-/* 調整中間標題 */
-.fc .fc-toolbar-chunk:nth-child(2) {
-    flex: 2;
-    display: flex;
-    justify-content: center;
-}
-
-/* 調整右側箭頭 */
-.fc .fc-toolbar-chunk:nth-child(3) {
-    flex: 1;
-    display: flex;
-    justify-content: flex-end;
-}
-
-/* 縮小手機上的字體，防止擠壓導致自動換行 */
-@media (max-width: 480px) {
-    .fc .fc-toolbar-title {
-        font-size: 0.9em !important; /* 縮小月份字體 */
-        white-space: nowrap;
-    }
-
-    .fc .fc-button {
-        padding: 4px 6px !important; /* 縮小按鈕 */
-        font-size: 0.75em !important;
-    }
-
-    .fc .fc-today-button {
-        padding: 4px 8px !important;
-    }
-}
-.date-tag {
-    background: #1a73e8;
-    color: white;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 0.85em;
-    display: inline-block;
-    margin: 2px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-/* 讓選中的格子在月曆上更有感覺 */
-.fc-daygrid-day:hover {
-    cursor: pointer;
-    background-color: #f1f3f4;
-}
-
-.date-tag {
-    background-color: #1a73e8;
-    color: white;
-    padding: 4px 10px;
-    border-radius: 15px;
-    font-size: 0.85em;
-    margin: 2px;
-    display: inline-block;
-}
+.fc-scroller { overflow: hidden !important; }
