@@ -353,3 +353,13 @@ hr {
     cursor: pointer;
     background-color: #f1f3f4;
 }
+
+.date-tag {
+    background-color: #1a73e8;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 0.85em;
+    margin: 2px;
+    display: inline-block;
+}
