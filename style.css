@@ -1,74 +1,155 @@
+/* 基礎設定與字體 */
 body {
-    font-family: "Microsoft JhengHei", sans-serif;
-    background-color: #f0f2f5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+    font-family: "Microsoft JhengHei", "Heiti TC", sans-serif;
+    background-color: #f4f7f9;
     margin: 0;
-}
-.container {
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    width: 100%;
-    max-width: 450px;
-}
-h2 { text-align: center; color: #1a73e8; margin-bottom: 20px; }
-.form-group { margin-bottom: 15px; }
-label { display: block; margin-bottom: 5px; font-weight: bold; }
-input, select, textarea { 
-    width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; 
-    box-sizing: border-box; font-family: inherit;
-}
-textarea { resize: vertical; } /* 允許垂直縮放備註欄 */
-.date-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-button {
-    width: 100%; padding: 12px; background-color: #1a73e8; color: white;
-    border: none; border-radius: 6px; cursor: pointer; font-size: 16px; margin-top: 10px;
-}
-button:disabled { background-color: #ccc; }
-#message { margin-top: 20px; padding: 10px; border-radius: 6px; text-align: center; display: none; }
-/* 外層容器 */
-.main-wrapper {
+    padding: 20px;
     display: flex;
     justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 20px;
 }
 
+/* 主容器：改為垂直排列 */
 .container {
-    display: flex;
-    gap: 30px;
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    max-width: 1000px; /* 加寬以容納兩欄 */
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     width: 100%;
-    flex-wrap: wrap;
+    max-width: 600px; /* 垂直排版建議縮小寬度 */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
+/* 標題樣式 */
+h2, h3 {
+    text-align: center;
+    color: #1a73e8;
+    margin-top: 0;
+}
+
+/* 表單群組 */
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #444;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #dfe1e5;
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #1a73e8;
+}
+
+/* 日期橫排 */
+.date-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+/* 天數顯示區塊 */
+#daysDisplay {
+    background-color: #e8f0fe;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.9em;
+}
+
+/* 提交按鈕 */
+button {
+    width: 100%;
+    padding: 14px;
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.1s;
+}
+
+button:hover {
+    background-color: #1557b0;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* 提交訊息提示 */
+#message {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+    display: none;
+    font-size: 0.95em;
+    line-height: 1.5;
+}
+
+/* 分隔線 */
+hr {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 10px 0;
+}
+
+/* 月曆容器設定 */
 #calendar-container {
-    flex: 1.5; /* 月曆佔寬一點 */
-    min-width: 350px;
+    width: 100%;
+    margin-top: 10px;
 }
 
-#form-container {
-    flex: 1;
-    min-width: 300px;
-}
-
-/* 這是讓月曆顯現的關鍵 */
 #calendar {
-    max-height: 600px;
+    min-height: 400px;
     background: #fff;
-    padding: 10px;
-    border: 1px solid #eee;
+    padding: 5px;
+    border: 1px solid #f0f0f0;
     border-radius: 8px;
 }
 
-/* 調整 FullCalendar 字體大小適配手機 */
-.fc { font-size: 0.9em; }
+/* FullCalendar 內部元件微調 (適配窄版面) */
+.fc .fc-toolbar-title {
+    font-size: 1.1em !important;
+    color: #333;
+}
+
+.fc .fc-button {
+    padding: 4px 8px !important;
+    font-size: 0.85em !important;
+    background-color: #1a73e8 !important;
+    border: none !important;
+}
+
+.fc-daygrid-event {
+    font-size: 0.8em !important;
+    padding: 2px !important;
+}
+
+/* 手機版優化 */
+@media (max-width: 480px) {
+    body { padding: 10px; }
+    .container { padding: 15px; }
+    .date-row { grid-template-columns: 1fr; } /* 手機日期改垂直 */
+}
