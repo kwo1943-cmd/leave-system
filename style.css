@@ -1,0 +1,32 @@
+body {
+    font-family: "Microsoft JhengHei", sans-serif;
+    background-color: #f0f2f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+.container {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 450px;
+}
+h2 { text-align: center; color: #1a73e8; margin-bottom: 20px; }
+.form-group { margin-bottom: 15px; }
+label { display: block; margin-bottom: 5px; font-weight: bold; }
+input, select, textarea { 
+    width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; 
+    box-sizing: border-box; font-family: inherit;
+}
+textarea { resize: vertical; } /* 允許垂直縮放備註欄 */
+.date-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+button {
+    width: 100%; padding: 12px; background-color: #1a73e8; color: white;
+    border: none; border-radius: 6px; cursor: pointer; font-size: 16px; margin-top: 10px;
+}
+button:disabled { background-color: #ccc; }
+#message { margin-top: 20px; padding: 10px; border-radius: 6px; text-align: center; display: none; }

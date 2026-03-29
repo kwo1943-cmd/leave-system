@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>員工請假申請系統</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>假期申請表</h2>
+        <form id="leaveForm">
+            <div class="form-group">
+                <label for="employeeID">員工號碼 (Staff ID)：</label>
+                <input type="text" id="employeeID" placeholder="例如: ST123" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="leaveType">假期種類：</label>
+                <select id="leaveType" required>
+                    <option value="" disabled selected>請選擇假期類型</option>
+                    <option value="年假">年假 (Annual Leave)</option>
+                    <option value="勞工假期">勞工假期 (Statutory Holiday)</option>
+                </select>
+            </div>
+
+            <div class="date-row">
+                <div class="form-group">
+                    <label for="startDate">開始日期：</label>
+                    <input type="date" id="startDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="endDate">結束日期：</label>
+                    <input type="date" id="endDate" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="remarks">備註：</label>
+                <textarea id="remarks" rows="3" placeholder="請輸入備註內容..."></textarea>
+            </div>
+
+            <button type="submit" id="submitBtn">提交申請</button>
+        </form>
+        <div id="message"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
