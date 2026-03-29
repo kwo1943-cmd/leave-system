@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team2員工請假申請系統</title>
+    <title>Team2員工請假申請系統 (多選版)</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 </head>
@@ -12,7 +12,7 @@
         <div class="container">
             
             <div id="form-container">
-                <h2>Team2假期申請表</h2>
+                <h2>假期申請表</h2>
                 <form id="leaveForm">
                     <div class="form-group">
                         <label for="employeeID">員工號碼 (Staff ID)：</label>
@@ -28,47 +28,40 @@
                         </select>
                     </div>
 
-                    <div class="date-row">
-    <div class="form-group">
-        <label for="startDate">開始日期</label>
-        <input type="date" id="startDate" required>
-    </div>
-    <div class="form-group">
-        <label for="endDate">結束日期</label>
-        <input type="date" id="endDate" required>
-    </div>
-</div>
-<div id="daysDisplay" style="display: none;">
-    總計：<span id="totalDays">0</span> 天
-</div>
-<div id="selected-dates-container" style="margin-bottom: 20px;">
-    <label>已選取日期清單：</label>
-    <div id="date-tags" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
-        <span style="color: #999; font-size: 0.9em;">請點擊下方月曆選取日期...</span>
-    </div>
-    <div id="daysDisplay" style="margin-top: 10px; font-weight: bold; color: #1a73e8;">
-        總計選取：<span id="totalDays">0</span> 天
-    </div>
-</div>
+                    <div id="selected-dates-container">
+                        <label>已選取日期：</label>
+                        <div id="date-tags">
+                            <span style="color: #999; font-size: 0.9em;">請於下方月曆點擊選取日期...</span>
+                        </div>
+                        <div id="daysDisplay" style="display: none;">
+                            總計選取：<span id="totalDays">0</span> 天
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label for="remarks">備註：</label>
-                        <textarea id="remarks" rows="3" placeholder="請輸入備註內容..."></textarea>
+                        <textarea id="remarks" rows="2" placeholder="請輸入備註內容..."></textarea>
                     </div>
 
                     <button type="submit" id="submitBtn">提交申請</button>
                 </form>
+                
                 <div id="message"></div>
             </div>
 
-            <hr style="width: 100%; border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-            
+            <hr>
+
             <div id="calendar-container">
-                <h3 style="text-align:center; color:#1a73e8;">假期名額預覽</h3>
+                <h3 style="margin-bottom: 10px;">假期名額預覽 & 日期選取</h3>
+                <p style="text-align:center; font-size: 0.85em; color: #666; margin-bottom: 15px;">
+                    (點擊日期格子進行選取/取消)
+                </p>
                 <div id="calendar"></div>
             </div>
 
         </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
