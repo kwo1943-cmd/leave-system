@@ -5,55 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Team2員工請假申請系統</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 </head>
 <body>
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
-
-<div class="container" style="max-width: 900px; display: flex; gap: 20px; flex-wrap: wrap;">
-    <div id="calendar-container" style="flex: 1; min-width: 350px;">
-        <h3 style="text-align:center; color:#1a73e8;">假期名額預覽</h3>
-        <div id="calendar"></div>
-    </div>
-
-    <div id="form-container" style="flex: 1; min-width: 300px;">
-        <h2>假期申請表</h2>
-        <form id="leaveForm">
-            <div class="form-group">
-                <label for="employeeID">員工號碼 (Staff ID)：</label>
-                <input type="text" id="employeeID" placeholder="例如: ST123" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="leaveType">假期種類：</label>
-                <select id="leaveType" required>
-                    <option value="" disabled selected>請選擇假期類型</option>
-                    <option value="年假">年假 (Annual Leave)</option>
-                    <option value="勞工假期">勞工假期 (Statutory Holiday)</option>
-                </select>
+    <div class="main-wrapper">
+        <div class="container">
+            <div id="calendar-container">
+                <h3 style="text-align:center; color:#1a73e8;">假期名額預覽</h3>
+                <div id="calendar"></div>
             </div>
 
-            <div class="date-row">
-                <div class="form-group">
-                    <label for="startDate">開始日期：</label>
-                    <input type="date" id="startDate" required>
-                </div>
-                <div class="form-group">
-                    <label for="endDate">結束日期：</label>
-                    <div class="form-group" id="daysDisplay" style="display: none; color: #1a73e8; font-weight: bold; text-align: right; margin-top: -10px; margin-bottom: 15px;">
-    總計：<span id="totalDays">0</span> 天
-</div>
-                    <input type="date" id="endDate" required>
-                </div>
-            </div>
+            <div id="form-container">
+                <h2>假期申請表</h2>
+                <form id="leaveForm">
+                    <div class="form-group">
+                        <label for="employeeID">員工號碼 (Staff ID)：</label>
+                        <input type="text" id="employeeID" placeholder="例如: ST123" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="leaveType">假期種類：</label>
+                        <select id="leaveType" required>
+                            <option value="" disabled selected>請選擇假期類型</option>
+                            <option value="年假">年假 (Annual Leave)</option>
+                            <option value="勞工假期">勞工假期 (Statutory Holiday)</option>
+                        </select>
+                    </div>
 
-            <div class="form-group">
-                <label for="remarks">備註：</label>
-                <textarea id="remarks" rows="3" placeholder="請輸入備註內容..."></textarea>
-            </div>
+                    <div class="date-row">
+                        <div class="form-group">
+                            <label for="startDate">開始日期：</label>
+                            <input type="date" id="startDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="endDate">結束日期：</label>
+                            <input type="date" id="endDate" required>
+                        </div>
+                    </div>
+                    
+                    <div id="daysDisplay" style="display: none; color: #1a73e8; font-weight: bold; text-align: right; margin-bottom: 15px;">
+                        總計：<span id="totalDays">0</span> 天
+                    </div>
 
-            <button type="submit" id="submitBtn">提交申請</button>
-        </form>
-        <div id="message"></div>
+                    <div class="form-group">
+                        <label for="remarks">備註：</label>
+                        <textarea id="remarks" rows="3" placeholder="請輸入備註內容..."></textarea>
+                    </div>
+
+                    <button type="submit" id="submitBtn">提交申請</button>
+                </form>
+                <div id="message"></div>
+            </div>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>
