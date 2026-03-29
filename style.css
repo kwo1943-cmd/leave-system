@@ -56,18 +56,62 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* 日期橫排 */
+/* --- 日期格子優化 --- */
+
+/* 確保不論螢幕大小，日期都在同一列 */
 .date-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
+    display: flex;
+    gap: 10px; /* 格子之間的間距 */
+    margin-bottom: 15px;
 }
 
-/* 天數顯示區塊 */
+.date-row .form-group {
+    flex: 1; /* 讓兩個格子平分寬度 */
+    margin-bottom: 0; /* 移除底部間距，讓排版更緊湊 */
+}
+
+/* 針對輸入框本身的精細調整 */
+input[type="date"] {
+    padding: 8px 5px; /* 縮小上下內邊距，適合手機高度 */
+    font-size: 13px;  /* 稍微縮小字體，防止日期字串溢出 */
+    height: 40px;     /* 固定高度，讓視覺更統一 */
+    -webkit-appearance: none; /* 移除 iOS 預設陰影 */
+    background-color: #fafafa;
+}
+
+/* 讓 Label（開始/結束日期文字）更小一點，節省空間 */
+.date-row label {
+    font-size: 0.85em;
+    margin-bottom: 4px;
+    color: #666;
+}
+
+/* 天數顯示區塊的微調：緊貼在日期下方 */
 #daysDisplay {
-    background-color: #e8f0fe;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 0.9em;
+    margin-top: -5px;
+    margin-bottom: 10px;
+    padding: 5px 10px;
+    font-size: 0.85em;
+    background-color: #f0f7ff;
+    border-radius: 4px;
+    text-align: right;
+}
+
+/* --- 手機版特別覆蓋 (Media Query) --- */
+@media (max-width: 480px) {
+    .container {
+        padding: 15px; /* 縮小外層留白 */
+    }
+
+    h2 {
+        font-size: 1.4em; /* 縮小標題 */
+        margin-bottom: 15px;
+    }
+
+    /* 確保在極小螢幕下字體不會跑掉 */
+    input[type="date"] {
+        font-size: 12px;
+    }
 }
 
 /* 提交按鈕 */
