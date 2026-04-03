@@ -1,88 +1,79 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team2 請假管理系統</title>
+    <title>Team2員工請假申請系統 (多選版)</title>
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
-    <style>
-        body { font-family: "Microsoft JhengHei", sans-serif; background: #f4f7f6; padding: 20px; color: #333; }
-        .container { max-width: 900px; margin: 0 auto; }
-        .card { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        h2, h3 { color: #2c3e50; border-left: 5px solid #007bff; padding-left: 10px; }
-        
-        /* 表單樣式 */
-        .input-group { margin-bottom: 15px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-        input, select, textarea { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
-        button { padding: 8px 16px; background: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer; transition: 0.3s; }
-        button:hover { background: #0056b3; }
-        button:disabled { background: #ccc; cursor: not-allowed; }
-
-        /* 日期標籤 */
-        .date-tag { display: inline-block; background: #e8f0fe; color: #1967d2; padding: 5px 10px; border-radius: 15px; margin: 3px; font-size: 0.85em; font-weight: bold; }
-        
-        /* 月曆容器 */
-        #calendar { margin-top: 10px; background: #fff; padding: 10px; border-radius: 8px; }
-
-        /* 表格樣式 */
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-    </style>
 </head>
 <body>
+    <div class="main-wrapper">
+        <div class="container">
+            
+            <div id="form-container">
+                <h2>假期申請表</h2>
+                <form id="leaveForm">
+                    <div class="form-group">
+                        <label for="employeeID">員工號碼 (Staff ID)：</label>
+                        <input type="text" id="employeeID" placeholder="例如: ST123" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="leaveType">假期種類：</label>
+                        <select id="leaveType" required>
+                            <option value="" disabled selected>請選擇假期類型</option>
+                            <option value="年假">年假 (Annual Leave)</option>
+                            <option value="勞工假期">勞工假期 (Statutory Holiday)</option>
+                        </select>
+                    </div>
 
-<div class="container">
-    <h2>Team2 假期預約系統</h2>
+                    <div id="selected-dates-container">
+                        <label>已選取日期：</label>
+                        <div id="date-tags">
+                            <span style="color: #999; font-size: 0.9em;">請於下方月曆點擊選取日期...</span>
+                        </div>
+                        <div id="daysDisplay" style="display: none;">
+                            總計選取：<span id="totalDays">0</span> 天
+                        </div>
+                    </div>
 
-    <div class="card">
-        <h3>1. 選取請假日期</h3>
-        <div id="calendar"></div>
-        
-        <div id="daysDisplay" style="margin-top:15px; display:none;">
-            <strong>已選日期：</strong>
-            <div id="date-tags"></div>
-            <p>共計 <span id="totalDays">0</span> 天</p>
+                    <div class="form-group">
+                        <label for="remarks">備註：</label>
+                        <textarea id="remarks" rows="2" placeholder="請輸入備註內容..."></textarea>
+                    </div>
+
+                    <button type="submit" id="submitBtn">提交申請</button>
+                </form>
+                
+                <div id="message"></div>
+            </div>
+
+            <hr>
+
+            <div id="calendar-container">
+                <h3>假期名額預覽 & 日期選取</h3>
+                <p style="text-align:center; font-size: 0.85em; color: #666; margin-bottom: 15px;">
+                    (點擊日期格子進行選取/取消)
+                </p>
+                <div id="calendar"></div>
+            </div>
+
+            <hr>
+
+            <div id="manage-section">
+                <h3>取消/修正假期</h3>
+                <p style="font-size: 0.8em; color: #888; margin-bottom: 10px;">輸入工號可查詢並取消「已申請」的假期：</p>
+                <div class="form-group" style="display: flex; gap: 8px;">
+                    <input type="text" id="checkID" placeholder="輸入員工工號 (例如: ST123)">
+                    <button type="button" id="btnCheck" class="secondary-btn">查詢</button>
+                </div>
+                <div id="my-leaves-list"></div>
+            </div>
+
         </div>
-
-        <form id="leaveForm" style="margin-top:20px;">
-            <div class="input-group">
-                <label>員工工號：</label>
-                <input type="text" id="employeeID" placeholder="例如: ST123" required>
-                <label>請假類型：</label>
-                <select id="leaveType">
-                    <option value="特休">勞工假期</option>
-                    <option value="事假">年假</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <label>備註：</label>
-                <textarea id="remarks" rows="2" style="flex:1;" placeholder="選填..."></textarea>
-            </div>
-            <button type="submit" id="submitBtn">提交申請</button>
-        </form>
     </div>
 
-    <div class="card">
-        <h3>2. 查詢與報表管理</h3>
-        
-        <div class="input-group" style="margin-bottom: 20px;">
-            <input type="text" id="checkID" placeholder="輸入工號查詢紀錄">
-            <button id="btnCheck">搜尋我的假期</button>
-        </div>
-
-        <hr style="border:0; border-top:1px solid #eee; margin:20px 0;">
-
-        <div class="input-group">
-            <label>匯出指定月份：</label>
-            <input type="month" id="exportMonth">
-            <button id="btnExport" style="background-color: #28a745;">匯出 CSV 報表</button>
-        </div>
-
-        <div id="my-leaves-list"></div>
-    </div>
-</div>
-
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
